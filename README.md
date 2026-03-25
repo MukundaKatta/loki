@@ -1,56 +1,121 @@
-# 🔱 Loki — Browser Automation Agent
+# Loki — Browser Automation Agent
 
-> **Norse Mythology**: Trickster God | AI-powered browser automation agent
+> **Norse Mythology: The Trickster God** | AI-powered browser automation via natural language
 
-[![GitHub Pages](https://img.shields.io/badge/🌐_Live_Demo-Visit_Site-blue?style=for-the-badge)](https://MukundaKatta.github.io/loki/)
-[![GitHub](https://img.shields.io/github/license/MukundaKatta/loki?style=flat-square)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/MukundaKatta/loki?style=flat-square)](https://github.com/MukundaKatta/loki/stargazers)
+[![CI](https://github.com/MukundaKatta/loki/actions/workflows/ci.yml/badge.svg)](https://github.com/MukundaKatta/loki/actions/workflows/ci.yml)
+[![GitHub Pages](https://img.shields.io/badge/Live_Demo-Visit_Site-blue?style=for-the-badge)](https://MukundaKatta.github.io/loki/)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 🚀 Overview
+## Features
 
-AI-powered browser automation agent
+- **Natural Language Commands** — control a browser with plain English
+- **Command Parsing** — regex-based NL-to-action conversion (no ML model needed)
+- **Compound Commands** — chain multiple actions: `"go to google.com and search for AI"`
+- **Session Management** — tracks URL history, cookies, and extracted data
+- **Simulated Execution** — fully testable without a real browser
+- **CLI Interface** — interactive REPL and script execution
 
-**Tech Stack:** Python, Playwright
+## Supported Commands
 
-## 📦 Quick Start
+| Command | Example |
+|---------|---------|
+| Navigate | `go to example.com` |
+| Click | `click the login button` |
+| Type | `type hello in the search box` |
+| Scroll | `scroll down` |
+| Extract | `extract the text from the heading` |
+| Wait | `wait for 3 seconds` |
+| Screenshot | `take a screenshot` |
+| Back/Forward | `go back` / `go forward` |
+| Search | `search for machine learning` |
+
+## Quickstart
 
 ```bash
+# Clone
 git clone https://github.com/MukundaKatta/loki.git
 cd loki
-# Follow setup instructions below
+
+# Install
+pip install -e ".[dev]"
+
+# Run tests
+make test
+
+# Interactive mode
+python -m loki run
 ```
 
-## 🏗️ Project Structure
+### Example Session
+
+```
+loki> go to github.com
+{"status": "ok", "url": "https://github.com"}
+
+loki> click the sign in button
+{"status": "ok", "clicked": "sign in"}
+
+loki> type myuser in the username field
+{"status": "ok", "typed": "myuser", "target": "username field"}
+```
+
+### Script Execution
+
+```bash
+# Create a script
+cat > script.loki << 'EOF'
+go to example.com
+click the login button
+type admin in the username field
+type secret in the password field
+click the submit button
+EOF
+
+# Run it
+python -m loki execute script.loki
+```
+
+## Architecture
+
+```
+User command (text)
+  -> NLCommandParser.parse()  -> List[Action]
+  -> ActionExecutor.execute() -> result dict
+  -> BrowserSession           -> state tracking
+```
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for details.
+
+## Project Structure
 
 ```
 loki/
-├── README.md
-├── LICENSE
-├── CLAUDE.md
-├── .gitignore
-├── src/
-│   ├── main.py
-│   ├── config.py
-│   └── utils.py
+├── src/loki/
+│   ├── core.py      BrowserAgent, Action, ActionExecutor
+│   ├── parser.py    NLCommandParser (regex-based)
+│   ├── session.py   BrowserSession (URL history, cookies, data)
+│   ├── config.py    Configuration dataclass
+│   └── cli.py       CLI entry points
 ├── tests/
-│   └── test_main.py
+│   ├── test_core.py
+│   ├── test_parser.py
+│   └── test_session.py
 ├── docs/
-│   └── architecture.md
-├── examples/
-│   └── basic_usage.py
-└── .github/
-    └── workflows/
-        └── static.yml
+│   └── ARCHITECTURE.md
+└── pyproject.toml
 ```
 
-## 🌐 Live Demo
+## Live Demo
 
 Visit the landing page: **https://MukundaKatta.github.io/loki/**
 
-## 📄 License
+## Contributing
 
-MIT License — © 2026 Officethree Technologies
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## 🔱 Part of the Mythological Portfolio
+## License
 
-This is project **#loki** in the [100-project Mythological Portfolio](https://github.com/MukundaKatta) by Officethree Technologies.
+MIT License — See [LICENSE](LICENSE) for details.
+
+Part of the [Mythological Portfolio](https://github.com/MukundaKatta) by Officethree Technologies.
